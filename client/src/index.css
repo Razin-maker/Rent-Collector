@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #e0e5ec;
+  color: #4a5568;
+  letter-spacing: 0.01em;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Neumorphism styles */
+.neumorphic {
+  background: #e0e5ec;
+  border-radius: 20px;
+  box-shadow: 
+    9px 9px 16px rgba(163, 177, 198, 0.6),
+    -9px -9px 16px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.neumorphic:hover {
+  box-shadow: 
+    12px 12px 20px rgba(163, 177, 198, 0.7),
+    -12px -12px 20px rgba(255, 255, 255, 0.6);
+}
+
+.neumorphic-pressed {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.neumorphic-inner {
+  background: #e0e5ec;
+  border-radius: 15px;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Glassmorphism styles for cards */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e0e5ec;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a3b1c6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a98af;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

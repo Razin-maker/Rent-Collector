@@ -1,0 +1,18 @@
+{
+  "name": "rent-manager",
+  "version": "1.0.0",
+  "description": "Shop Rent Tracking System",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": ["rent", "tracking", "shop", "management"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

@@ -1,0 +1,15 @@
+-- Check existing table structures
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'shops'
+ORDER BY ordinal_position;
+
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'bills'
+ORDER BY ordinal_position;
+
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'payments'
+ORDER BY ordinal_position;
