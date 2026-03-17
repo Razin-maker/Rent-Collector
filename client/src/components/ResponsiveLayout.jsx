@@ -14,6 +14,7 @@ import MobileBills from '../mobile/pages/MobileBills';
 import MobileElectricity from '../mobile/pages/MobileElectricity';
 import MobilePayments from '../mobile/pages/MobilePayments';
 import MobileReports from '../mobile/pages/MobileReports';
+import MobileDailyCollection from '../mobile/pages/MobileDailyCollection';
 import useIsMobile from '../hooks/useIsMobile';
 
 const ResponsiveLayout = () => {
@@ -30,6 +31,7 @@ const ResponsiveLayout = () => {
             <Route path="/payments" element={<MobilePayments />} />
             <Route path="/reports" element={<MobileReports />} />
             <Route path="/electricity" element={<MobileElectricity />} />
+            <Route path="/daily-collection" element={<MobileDailyCollection />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
@@ -50,6 +52,7 @@ const ResponsiveLayout = () => {
             <Route path="/payments" element={<Payments />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/electricity" element={<Electricity />} />
+            <Route path="/daily-collection" element={<MobileDailyCollection />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

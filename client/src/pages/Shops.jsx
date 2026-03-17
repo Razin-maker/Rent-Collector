@@ -10,7 +10,9 @@ const Shops = () => {
     shopNumber: '',
     tenantName: '',
     phone: '',
-    rent: ''
+    rent: '',
+    rentType: 'monthly',
+    dailyRate: ''
   });
 
   useEffect(() => {
@@ -42,7 +44,9 @@ const Shops = () => {
         shopNumber: '',
         tenantName: '',
         phone: '',
-        rent: ''
+        rent: '',
+        rentType: 'monthly',
+        dailyRate: ''
       });
       fetchShops();
     } catch (error) {
@@ -56,7 +60,9 @@ const Shops = () => {
       shopNumber: shop.shopnumber,
       tenantName: shop.tenantname,
       phone: shop.phone,
-      rent: shop.rent
+      rent: shop.rent,
+      rentType: shop.rent_type || 'monthly',
+      dailyRate: shop.daily_rate || ''
     });
     setShowForm(true);
   };
@@ -168,6 +174,35 @@ const Shops = () => {
                   required
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rent Type
+                </label>
+                <select
+                  value={formData.rentType}
+                  onChange={(e) => setFormData({ ...formData, rentType: e.target.value })}
+                  className="w-full px-3 py-2 neumorphic-inner border-none focus:outline-none text-gray-700 bg-transparent"
+                  required
+                >
+                  <option value="monthly">Monthly</option>
+                  <option value="daily">Daily</option>
+                </select>
+              </div>
+              {formData.rentType === 'daily' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Daily Rate
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.dailyRate}
+                    onChange={(e) => setFormData({ ...formData, dailyRate: e.target.value })}
+                    className="w-full px-3 py-2 neumorphic-inner border-none focus:outline-none text-gray-700"
+                    placeholder="Enter daily rent amount"
+                    required
+                  />
+                </div>
+              )}
             </div>
             <div className="flex gap-3 mt-6">
               <button
@@ -185,7 +220,9 @@ const Shops = () => {
                     shopNumber: '',
                     tenantName: '',
                     phone: '',
-                    rent: ''
+                    rent: '',
+                    rentType: 'monthly',
+                    dailyRate: ''
                   });
                 }}
                 className="neumorphic px-6 py-3 text-gray-700 font-medium hover:neumorphic-pressed transition-all duration-300"
@@ -204,7 +241,8 @@ const Shops = () => {
               <th className="text-left py-3 px-4 font-semibold text-gray-700">Shop Number</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-700">Tenant Name</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-700">Phone</th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700">Rent</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700">Type</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700">Rent/Daily</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
             </tr>
           </thead>
@@ -213,8 +251,16 @@ const Shops = () => {
               <tr key={shop.id} className="hover:bg-gray-100">
                 <td className="py-3 px-4">{shop.shopnumber}</td>
                 <td className="py-3 px-4">{shop.tenantname}</td>
-                <td className="py-3 px-4">{shop.phone}</td>
-                <td className="py-3 px-4">{shop.rent.toLocaleString()}</td>
+                <td className="py-3 px-3">{shop.phone}</td>
+                <td className="py-3 px-3 text-xs uppercase font-bold text-gray-500">
+                  {shop.rent_type === 'daily' ? 'Daily' : 'Monthly'}
+                </td>
+                <td className="py-3 px-3">
+                  {shop.rent.toLocaleString()}
+                  {shop.rent_type === 'daily' && (
+                    <span className="text-xs text-indigo-600 block">Daily: {shop.daily_rate}</span>
+                  )}
+                </td>
                 <td className="py-3 px-4">
                   <div className="flex gap-2">
                     <button

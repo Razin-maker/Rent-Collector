@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import axios from 'axios';
+import DailyCollectionCard from '../mobile/components/DailyCollectionCard';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +28,8 @@ const Dashboard = () => {
     totalShops: 0,
     totalRentCollected: 0,
     totalDue: 0,
-    currentMonthStatus: []
+    currentMonthStatus: [],
+    dailyShops: []
   });
 
   const [chartData, setChartData] = useState(null);
@@ -39,30 +41,38 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const [shopsRes, paymentsRes, billsRes] = await Promise.all([
+      const [shopsRes, paymentsRes, billsRes, dailyRes] = await Promise.all([
         axios.get('/api/shops'),
         axios.get('/api/payments'),
-        axios.get('/api/bills')
+        axios.get('/api/bills'),
+        axios.get('/api/daily/all')
       ]);
 
       const totalShops = shopsRes.data.length;
       
-      const totalRentCollected = paymentsRes.data.reduce((sum, payment) => 
-        sum + payment.paidamount, 0
+      const monthlyCollected = (paymentsRes.data || []).reduce((sum, payment) => 
+        sum + (payment.paidamount || 0), 0
+      );
+      
+      const dailyCollected = (dailyRes.data || []).reduce((sum, d) => 
+        sum + (Number(d.amount) || 0), 0
       );
 
-      const totalDue = paymentsRes.data.reduce((sum, payment) => 
-        sum + payment.dueamount, 0
+      const totalRentCollected = monthlyCollected + dailyCollected;
+
+      const totalDue = (paymentsRes.data || []).reduce((sum, payment) => 
+        sum + (payment.dueamount || 0), 0
       );
 
       const currentMonth = new Date().toISOString().slice(0, 7);
-      const currentMonthBills = billsRes.data.filter(bill => bill.month === currentMonth);
+      const currentMonthBills = (billsRes.data || []).filter(bill => bill.month === currentMonth);
 
       setStats({
         totalShops,
         totalRentCollected,
         totalDue,
-        currentMonthStatus: currentMonthBills
+        currentMonthStatus: currentMonthBills,
+        dailyShops: (shopsRes.data || []).filter(s => s.rent_type === 'daily')
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -228,11 +238,11 @@ const Dashboard = () => {
             <tbody>
               {stats.currentMonthStatus.map(bill => (
                 <tr key={bill.id} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-3 px-4">{bill.shops.shopnumber}</td>
-                  <td className="py-3 px-4">{bill.shops.tenantname}</td>
+                  <td className="py-3 px-4">{bill.shops?.shopnumber}</td>
+                  <td className="py-3 px-4">{bill.shops?.tenantname}</td>
                   <td className="py-3 px-4">{bill.rent.toLocaleString()}</td>
                   <td className="py-3 px-4">{bill.electricity.toLocaleString()}</td>
-                  <td className="py-3 px-4">{bill.water.toLocaleString()}</td>
+                  <td className="py-3 px-4">{bill.water?.toLocaleString()}</td>
                   <td className="py-3 px-4">{bill.total.toLocaleString()}</td>
                 </tr>
               ))}

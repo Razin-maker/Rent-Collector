@@ -20,11 +20,18 @@ module.exports = (supabase) => {
   // Create a new shop
   router.post('/', async (req, res) => {
     try {
-      const { shopNumber, tenantName, phone, rent } = req.body;
+      const { shopNumber, tenantName, phone, rent, rentType, dailyRate } = req.body;
       
       const { data, error } = await supabase
         .from('shops')
-        .insert([{ shopnumber: shopNumber, tenantname: tenantName, phone, rent }])
+        .insert([{ 
+          shopnumber: shopNumber, 
+          tenantname: tenantName, 
+          phone, 
+          rent,
+          rent_type: rentType || 'monthly',
+          daily_rate: dailyRate || 0
+        }])
         .select();
         
       if (error) throw error;
@@ -38,11 +45,18 @@ module.exports = (supabase) => {
   router.put('/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const { shopNumber, tenantName, phone, rent } = req.body;
+      const { shopNumber, tenantName, phone, rent, rentType, dailyRate } = req.body;
       
       const { data, error } = await supabase
         .from('shops')
-        .update({ shopnumber: shopNumber, tenantname: tenantName, phone, rent })
+        .update({ 
+          shopnumber: shopNumber, 
+          tenantname: tenantName, 
+          phone, 
+          rent,
+          rent_type: rentType,
+          daily_rate: dailyRate
+        })
         .eq('id', id)
         .select();
         

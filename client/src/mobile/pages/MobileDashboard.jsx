@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DailyCollectionCard from '../components/DailyCollectionCard';
 
 const MobileDashboard = () => {
   const [stats, setStats] = useState({
     totalShops: 0,
     totalRentCollected: 0,
     totalDue: 0,
-    currentMonthStatus: []
+    currentMonthStatus: [],
+    dailyShops: []
   });
 
   useEffect(() => {
@@ -15,22 +17,27 @@ const MobileDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const [shopsRes, paymentsRes, billsRes] = await Promise.all([
+      const [shopsRes, paymentsRes, billsRes, dailyRes] = await Promise.all([
         axios.get('/api/shops'),
         axios.get('/api/payments'),
-        axios.get('/api/bills')
+        axios.get('/api/bills'),
+        axios.get('/api/daily/all')
       ]);
 
-      const totalRentCollected = paymentsRes.data.reduce((sum, p) => sum + p.paidamount, 0);
-      const totalDue = paymentsRes.data.reduce((sum, p) => sum + p.dueamount, 0);
+      const monthlyCollected = paymentsRes.data?.reduce((sum, p) => sum + (p.paidamount || 0), 0) || 0;
+      const dailyCollected = dailyRes.data?.reduce((sum, d) => sum + (Number(d.amount) || 0), 0) || 0;
+      const totalRentCollected = monthlyCollected + dailyCollected;
+
+      const totalDue = paymentsRes.data?.reduce((sum, p) => sum + (p.dueamount || 0), 0) || 0;
       const currentMonth = new Date().toISOString().slice(0, 7);
-      const currentMonthBills = billsRes.data.filter(bill => bill.month === currentMonth);
+      const currentMonthBills = (billsRes.data || []).filter(bill => bill.month === currentMonth);
 
       setStats({
-        totalShops: shopsRes.data.length,
+        totalShops: (shopsRes.data || []).length,
         totalRentCollected,
         totalDue,
-        currentMonthStatus: currentMonthBills
+        currentMonthStatus: currentMonthBills,
+        dailyShops: shopsRes.data.filter(s => s.rent_type === 'daily')
       });
     } catch (error) {
       console.error(error);
@@ -70,8 +77,8 @@ const MobileDashboard = () => {
           <div key={bill.id} className="neumorphic p-4 rounded-3xl">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">{bill.shops.shopnumber}</p>
-                <p className="font-bold text-gray-800">{bill.shops.tenantname}</p>
+                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">{bill.shops?.shopnumber}</p>
+                <p className="font-bold text-gray-800">{bill.shops?.tenantname}</p>
               </div>
               <div className="text-right">
                 <p className="text-[10px] text-gray-400">Net Total</p>

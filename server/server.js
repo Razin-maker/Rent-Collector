@@ -21,10 +21,12 @@ const authMiddleware = require('./middleware/auth');
 const shopRoutes = require('./routes/shopRoutes')(supabase);
 const billRoutes = require('./routes/billRoutes')(supabase);
 const paymentRoutes = require('./routes/paymentRoutes')(supabase);
+const dailyRoutes = require('./routes/dailyRoutes')(supabase);
 
 app.use('/api/shops', authMiddleware, shopRoutes);
 app.use('/api/bills', authMiddleware, billRoutes);
 app.use('/api/payments', authMiddleware, paymentRoutes);
+app.use('/api/daily', authMiddleware, dailyRoutes);
 
 
 // Test route

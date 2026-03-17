@@ -10,7 +10,9 @@ const MobileShops = () => {
     shopNumber: '',
     tenantName: '',
     phone: '',
-    rent: ''
+    rent: '',
+    rentType: 'monthly',
+    dailyRate: ''
   });
 
   useEffect(() => { fetchShops(); }, []);
@@ -32,7 +34,7 @@ const MobileShops = () => {
       }
       setShowForm(false);
       setEditingShop(null);
-      setFormData({ shopNumber: '', tenantName: '', phone: '', rent: '' });
+      setFormData({ shopNumber: '', tenantName: '', phone: '', rent: '', rentType: 'monthly', dailyRate: '' });
       fetchShops();
       Swal.fire({ title: 'সফল!', text: 'দোকানের তথ্য সংরক্ষিত হয়েছে।', icon: 'success', timer: 1500, showConfirmButton: false, background: '#e0e5ec' });
     } catch (error) { console.error(error); }
@@ -40,7 +42,14 @@ const MobileShops = () => {
 
   const handleEdit = (shop) => {
     setEditingShop(shop);
-    setFormData({ shopNumber: shop.shopnumber, tenantName: shop.tenantname, phone: shop.phone, rent: shop.rent });
+    setFormData({ 
+      shopNumber: shop.shopnumber, 
+      tenantName: shop.tenantname, 
+      phone: shop.phone, 
+      rent: shop.rent, 
+      rentType: shop.rent_type || 'monthly', 
+      dailyRate: shop.daily_rate || '' 
+    });
     setShowForm(true);
   };
 
@@ -83,7 +92,12 @@ const MobileShops = () => {
              <div className="relative z-10">
                 <div className="flex justify-between items-start mb-2">
                     <p className="px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-widest">{shop.shopnumber}</p>
-                    <p className="text-sm font-black text-gray-800">৳{shop.rent.toLocaleString()}</p>
+                     <div className="flex flex-col">
+                        <p className="text-sm font-black text-gray-800">৳{shop.rent.toLocaleString()}</p>
+                        {shop.rent_type === 'daily' && (
+                          <p className="text-[10px] font-bold text-indigo-600">Daily: ৳{shop.daily_rate}</p>
+                        )}
+                     </div>
                 </div>
                 <h3 className="text-lg font-bold text-gray-800">{shop.tenantname}</h3>
                 <p className="text-gray-500 text-xs mb-4">{shop.phone}</p>
@@ -106,6 +120,33 @@ const MobileShops = () => {
                <input placeholder="Tenant Name" value={formData.tenantName} onChange={(e)=>setFormData({...formData, tenantName: e.target.value})} className="w-full p-4 neumorphic-inner rounded-2xl focus:outline-none" required />
                <input placeholder="Phone" value={formData.phone} onChange={(e)=>setFormData({...formData, phone: e.target.value})} className="w-full p-4 neumorphic-inner rounded-2xl focus:outline-none" required />
                <input placeholder="Monthly Rent" type="number" value={formData.rent} onChange={(e)=>setFormData({...formData, rent: e.target.value})} className="w-full p-4 neumorphic-inner rounded-2xl focus:outline-none" required />
+               
+               <div className="space-y-1">
+                 <label className="text-[10px] font-black text-gray-400 uppercase ml-2">Rent Type</label>
+                 <select 
+                   value={formData.rentType} 
+                   onChange={(e)=>setFormData({...formData, rentType: e.target.value})} 
+                   className="w-full p-4 neumorphic-inner rounded-2xl focus:outline-none bg-transparent appearance-none"
+                   required
+                 >
+                   <option value="monthly">Monthly Plan</option>
+                   <option value="daily">Daily Collection</option>
+                 </select>
+               </div>
+
+               {formData.rentType === 'daily' && (
+                 <div className="space-y-1">
+                   <label className="text-[10px] font-black text-gray-400 uppercase ml-2">Daily Rent Rate</label>
+                   <input 
+                     placeholder="Daily Rate (৳)" 
+                     type="number" 
+                     value={formData.dailyRate} 
+                     onChange={(e)=>setFormData({...formData, dailyRate: e.target.value})} 
+                     className="w-full p-4 neumorphic-inner rounded-2xl focus:outline-none" 
+                     required 
+                   />
+                 </div>
+               )}
                <div className="flex gap-4 pt-4">
                   <button type="submit" className="flex-1 py-4 rounded-2xl bg-indigo-600 text-white font-black shadow-lg">Save Changes</button>
                </div>
